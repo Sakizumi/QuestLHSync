@@ -23,9 +23,10 @@ headset module.
 ## Requirements
 
 - A **Quest Pro, Quest 2, Quest 3 or Quest 3S**, rooted with
-  [Magisk](https://github.com/topjohnwu/Magisk). The Quest 2 has the same
-  four OV7251 tracking cameras as the Quest 3, but nothing is measured on
-  one yet: expect rough edges, the driver's log says what lhsight finds.
+  [Magisk](https://github.com/topjohnwu/Magisk). A Quest 2's four OV7251
+  cameras read like a Quest Pro's (40 buffers, ten per camera, 50 frames a
+  second), but nothing is measured through SteamVR on one yet: expect rough
+  edges, the driver's log says what lhsight finds.
 - Or a **Steam Frame**. No root, no developer password: everything installs as
   your user.
 - **SteamVR base stations**, 1.0 or 2.0.
