@@ -81,8 +81,9 @@ int hs_calibration(char **data, size_t *len, char *name, size_t n) {
 // ---------------------------------------------------------------- the cameras lhsight reads, from the calibration
 // "CameraCalibration": [{"Id": "2", "SensorType": "OV7251", "Shutter": {"Type": "Global"}, "ImageSize": [640, 480],
 // ...}, ...] -> "id:w:h:scan,..." for the global-shutter (tracking) cameras. scan 1 for the side cameras (OV7251):
-// the Quest Pro's front pair (OG01A) only ever saw other lights, and the Quest 3 has the same four sensors. A headset
-// without OV7251s scans every tracking camera.
+// the Quest Pro's front pair (OG01A) only ever saw other lights, and the Quest 3 has the same four sensors. The Quest 2
+// (hollywood) is four OV7251s too, one per CSI lane (/vendor/etc/camera/com.qti.sensormodule.liteon_ov7251_csi[a-d]_
+// syncboss_cam_*). A headset without OV7251s scans every tracking camera.
 static const char *skip_ws(const char *p, const char *e) {
   while (p < e && (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t' || *p == ',')) p++;
   return p;

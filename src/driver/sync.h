@@ -144,7 +144,7 @@ class Optics {
   bool InImage(int cam, V3 dc, double margin) const;          // a camera-frame direction lands on the image
   bool Used(int cam) const { return cam >= 0 && cam < kMaxCam && cams_[cam].valid && cams_[cam].use; }  // sightings count
   std::string Unused() const;  // "0, 1": the calibrated cameras left out, "" for none
-  const std::string &device() const { return device_; }       // "Seacliff" (Quest Pro), "Eureka" (Quest 3), ...
+  const std::string &device() const { return device_; }       // "Seacliff" (Quest Pro), "Hollywood" (Quest 2), "Eureka" (Quest 3), ...
   enum Headset { kQuest, kFrame, kGalaxyXR };
   Headset headset() const { return headset_; }     // whose calibration it is
   bool exact_time() const { return exact_time_; }  // frame times are the frames' own, no poll lag to take off

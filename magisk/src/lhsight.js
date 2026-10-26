@@ -6,7 +6,7 @@ var MAX_MS = parseInt("@DUR@");
 // The headset's global-shutter cameras from its calibration file, "id:width:height:scan,..." (lhsyncd fills it in).
 // scan 1: read this one. lhsyncd picks the side cameras (OV7251, 640x480): on the Quest Pro the front pair (OG01A,
 // 1280x1024) never caught a base station, only other lights, and cost three quarters of the scan time. The Quest 3
-// has the same four sensors. Left unfilled (a hand run): the Quest Pro's.
+// has the same four sensors, and the Quest 2 four OV7251s as well. Left unfilled (a hand run): the Quest Pro's.
 var CAMS_SPEC = "@CAMS@";
 var CAMS = (CAMS_SPEC.charAt(0) === "@" ? "0:1280:1024:0,1:1280:1024:0,2:640:480:1,3:640:480:1" : CAMS_SPEC)
   .split(",").filter(function (e) { return e.length; }).map(function (e) {

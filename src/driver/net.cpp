@@ -68,6 +68,7 @@ std::string QuestFamily(const std::string &text) {
     if (isalnum((unsigned char)c)) s += (char)tolower((unsigned char)c);
   auto has = [&](const char *k) { return s.find(k) != std::string::npos; };
   if (has("questpro") || has("seacliff")) return "Quest Pro";
+  if (has("quest2") || has("hollywood")) return "Quest 2";
   if (has("quest3") || has("eureka") || has("panther")) return "Quest 3";
   if (has("steamframe") || has("deckard")) return "Steam Frame";
   return "";
