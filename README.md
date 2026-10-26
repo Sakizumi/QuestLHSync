@@ -25,10 +25,11 @@ headset module.
 - A **Quest Pro, Quest 2, Quest 3 or Quest 3S**, rooted with
   [Magisk](https://github.com/topjohnwu/Magisk). On a Quest 2 the module reads
   its four 640x480 OV7251 cameras (40 buffers, ten per camera) and the driver
-  picks the headset up (Virtual Desktop names it `Oculus Quest2`; Link untested)
-  - but its short frames don't follow the Quest Pro's cadence, so the frame
-  periods are learned: watch the log's `camera N: short frames every ...` lines.
-  Expect rough edges on one.
+  picks the headset up (Virtual Desktop names it `Oculus Quest2`; Link untested).
+  Its short frames come every third one like a Quest Pro's, but at 50 or 75
+  frames a second (40 or 60 ms), which is neither of the Quest's two grids: the
+  frame periods are learned instead, so watch the log's `camera N: short frames
+  every ...` lines. Expect rough edges on one.
 - Or a **Steam Frame**. No root, no developer password: everything installs as
   your user.
 - **SteamVR base stations**, 1.0 or 2.0.
