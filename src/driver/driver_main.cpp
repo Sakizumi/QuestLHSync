@@ -513,6 +513,9 @@ class Provider : public vr::IServerTrackedDeviceProvider {
     g_rel->SetEnabled(steady_);
     bool rec = s->GetBool(kSection, "record", &e);
     SetRecording(e == vr::VRSettingsError_None && rec);
+    // a single base station: its own sightings score the fit (no second station to cross-check against)
+    bool one = s->GetBool(kSection, "oneStation", &e);
+    g_sync->SetOneStation(e == vr::VRSettingsError_None && one);
   }
 
   void SetRecording(bool on) {

@@ -19,7 +19,7 @@
 
 int main(int argc, char **argv) {
   std::string log, calib, dir, outp, xfp;
-  bool learn = false, learn_grid = false, pings = false;
+  bool learn = false, learn_grid = false, pings = false, one_station = false;
   double expo = -1;
   std::map<std::string, int> chans;
   for (int i = 1; i < argc; i++) {
@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
     else if (a == "--expo" && i + 1 < argc) expo = atof(argv[++i]);
     else if (a == "--learn") learn = true;
     else if (a == "--learn-grid") learn_grid = true;
+    else if (a == "--one-station") one_station = true;
     else if (a == "--pings") pings = true;
     else log = a;
   }
@@ -50,6 +51,7 @@ int main(int argc, char **argv) {
   cfg.arrival_clock = !pings;
   cfg.learn_timing = learn;
   cfg.learn_grid = learn_grid;
+  cfg.one_station = one_station;
   Sync sync(cfg, logfn);
   if (expo >= 0) sync.ForceExpo(expo);
   sync.SetStreamer("replay");

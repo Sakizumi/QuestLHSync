@@ -1076,11 +1076,13 @@ void Solver::Support(const X4 &x, const std::vector<V3> &S, const std::vector<V3
 
 // yaw needs two stations: every station's support but the best seen one's. Only the second best's, a fit of two
 // stations scored the same as one a third station's sightings agree with too (a Steam Frame recording: the sightings
-// of a third station told the true fit from one 5 deg and 0.7 m off it, which two stations fit as well)
-int Solver::Score(const std::vector<int> &c) {
-  if (c.size() < 2) return 0;
+// of a third station told the true fit from one 5 deg and 0.7 m off it, which two stations fit as well).
+// With one station there is no second best: SetOneStation lets its own count stand, the only evidence there is.
+int Solver::Score(const std::vector<int> &c) const {
+  if (c.empty()) return 0;
   int best = 0, sum = 0;
   for (int n : c) { sum += n; best = std::max(best, n); }
+  if (c.size() < 2) return one_station_ ? sum : 0;
   return sum - best;
 }
 
@@ -1437,7 +1439,7 @@ bool Solver::Acquire(double now, X4 &best, int &bs, int &tight) {
   Stations(keys, S, Z);
   Rays all = GetRays(std::max(now - ACQ_WIN, since_)), r = Bright(all);
   acq_dim_ = r.size() == all.size() && std::count(all.B.begin(), all.B.end(), 0) > 0;
-  if (S.size() < 2 || r.size() < 30) return false;
+  if (S.empty() || (S.size() < 2 && !one_station_) || r.size() < 30) return false;
   Rays t = Thin(r);
   std::vector<X4> H;
   Hypotheses(t, S, H);
@@ -1487,6 +1489,9 @@ bool Solver::Acquire(double now, X4 &best, int &bs, int &tight) {
   }
   if (!have) return false;
   CheckMirror(best, bs, S, Z, r, t, now);
+  if (one_station_)  // a single station: say what the candidates reached, the score the only evidence there is
+    log_(Fmt("acquire, one station: %d rays, %d thinned, %d candidates, best %d", (int)r.size(), (int)t.size(),
+             (int)cand.size(), bs));
   acq_x_ = best; has_acq_x_ = true;
   std::vector<int> c;
   Support(best, S, Z, t, TIGHT_DEG, c);
@@ -2668,6 +2673,7 @@ Sync::Sync(SyncConfig cfg, LogFn log)
     : cfg_(std::move(cfg)), log_(std::move(log)), sfile_(LoadStations(cfg_.dir)), frame_(sfile_, log_),
       solver_(log_, 1, sfile_.autogen ? std::map<std::string, V3>() : sfile_.fix) {
   if (cfg_.arrival_clock) expo_ = kExpoArrival;
+  solver_.SetOneStation(cfg_.one_station);
   solver_.SetBody([this](const X4 &x) { return BodyDist(x); });
   solver_.SetMotion([this](const X4 &x, double &moved) { return BodyMotion(x, moved); });
   solver_.SetInImage([this](int cam, V3 d) {
@@ -2793,6 +2799,11 @@ void Sync::HeadsetReset() {
   grid_ = FrameGrid(grid_quest_);
   grid_logged_.clear();
   waiting_.clear();
+}
+
+void Sync::SetOneStation(bool on) {
+  std::lock_guard<std::mutex> g(net_);
+  solver_.SetOneStation(on);
 }
 
 void Sync::SetStreamer(const std::string &system) {

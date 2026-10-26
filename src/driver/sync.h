@@ -324,6 +324,8 @@ class Solver {
                const std::vector<double> &G, const std::vector<int> &C, const std::vector<char> &B);  // rays >= from
   void SetStation(const std::string &serial, V3 p, const M3 &R);
   void SetChannel(const std::string &serial, int channel);
+  // a single base station: nothing to cross-check a fit against, so its own sightings stand in for the score
+  void SetOneStation(bool on) { one_station_ = on; }
   void SetFramePeriod(double p) { frame_p_ = p; }  // s between short frames
   void AddFrame(double t, double g, int cam, V3 o, const M3 &R);  // every short frame; camera pose in Quest space
   void SetInImage(std::function<bool(int cam, V3 d)> f) { in_image_ = std::move(f); }
@@ -392,6 +394,7 @@ class Solver {
   MotionFn motion_;
   bool acq_forced_ = false;  // the last acquisition overruled the current fit by the mirror check
   bool acq_dim_ = false;     // ... was found on dim rays too (Bright): it needs twice the support
+  bool one_station_ = false; // a single base station: its own support scores a fit (no second to cross-check)
   std::atomic<bool> starved_{false};  // the recent rays are under 5% bright, of 200 or more (see Bright)
   bool Starved(const Rays &r) const;
   // the Steam Frame: its cameras seldom see a base station's dot saturate (a recording: 95% of the sightings of the
@@ -407,7 +410,7 @@ class Solver {
 
   Rays GetRays(double t0);
   void Support(const X4 &x, const std::vector<V3> &S, const std::vector<V3> &Z, const Rays &r, double gate, std::vector<int> &cnt) const;
-  static int Score(const std::vector<int> &c);
+  int Score(const std::vector<int> &c) const;
   static void Cells(const Rays &r, const std::vector<char> &use, std::vector<int> &cnt);
   // pivot: also fit a tilt of the stations about it (6 DOF), returned in FitR::tilt; with axis (horizontal, unit),
   // only about that axis (5 DOF, FitR::theta too). dim_gate: the gate for rays dimmer than kBright, when narrower.
@@ -462,6 +465,7 @@ struct SyncConfig {
   bool arrival_clock = false;  // old logs: no round trips, fixed EXPO
   bool learn_timing = true;
   bool learn_grid = false;     // tools: learn the frame period even on a Quest Pro
+  bool one_station = false;    // a single base station: let its own sightings score a fit (no second to cross-check)
 };
 
 struct Transform { bool active = false; Quat q; V3 t; };  // raw lighthouse -> Quest
@@ -481,6 +485,7 @@ class Sync {
   void SetStationsRaw(const std::map<std::string, std::pair<V3, M3>> &raw);
   void SetChannels(const std::map<std::string, int> &ch);
   void SetStreamer(const std::string &system);
+  void SetOneStation(bool on);  // a single base station: its own sightings score the fit
   // the headset this session talks to (its serial and model from its hello): state.json is kept per headset. Safe from
   // any thread; Tick takes it up
   void SetHeadset(const std::string &serial, const std::string &model);
