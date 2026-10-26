@@ -33,8 +33,10 @@ def vrpathreg():
 
 
 def steamvr_running():
-    out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq vrserver.exe"], capture_output=True, text=True).stdout
-    return "vrserver.exe" in out
+    # errors="replace": tasklist writes in the console's code page (Spanish Windows: cp1252), not UTF-8
+    out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq vrserver.exe"], capture_output=True, text=True,
+                         errors="replace").stdout
+    return "vrserver.exe" in (out or "")
 
 
 def pc():
@@ -68,7 +70,7 @@ def headset():
     adb_path = adb_exe()
 
     def adb(*args, check=True, **kw):
-        return subprocess.run([adb_path, *args], capture_output=True, text=True, check=check, **kw)
+        return subprocess.run([adb_path, *args], capture_output=True, text=True, errors="replace", check=check, **kw)
 
     devs = [l.split()[0] for l in adb("devices").stdout.splitlines()[1:] if l.strip().endswith("device")]
     names = {"seacliff": "Quest Pro", "hollywood": "Quest 2", "eureka": "Quest 3", "panther": "Quest 3S"}
