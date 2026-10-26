@@ -23,10 +23,12 @@ headset module.
 ## Requirements
 
 - A **Quest Pro, Quest 2, Quest 3 or Quest 3S**, rooted with
-  [Magisk](https://github.com/topjohnwu/Magisk). A Quest 2's four OV7251
-  cameras read like a Quest Pro's (40 buffers, ten per camera, 50 frames a
-  second), but nothing is measured through SteamVR on one yet: expect rough
-  edges, the driver's log says what lhsight finds.
+  [Magisk](https://github.com/topjohnwu/Magisk). On a Quest 2 the module reads
+  its four 640x480 OV7251 cameras (40 buffers, ten per camera) and the driver
+  picks the headset up (Virtual Desktop names it `Oculus Quest2`; Link untested)
+  - but its short frames don't follow the Quest Pro's cadence, so the frame
+  periods are learned: watch the log's `camera N: short frames every ...` lines.
+  Expect rough edges on one.
 - Or a **Steam Frame**. No root, no developer password: everything installs as
   your user.
 - **SteamVR base stations**, 1.0 or 2.0.

@@ -2,7 +2,7 @@
 DEV=$(getprop ro.product.device)
 case "$DEV" in
   seacliff*) ui_print "- Quest Pro ($DEV)" ;;
-  hollywood*) ui_print "- Quest 2 ($DEV): not tried yet, the driver's log says what lhsight finds" ;;
+  hollywood*) ui_print "- Quest 2 ($DEV): four OV7251s, read like a Quest Pro's" ;;
   eureka*) ui_print "- Quest 3 ($DEV): not tried yet, the driver's log says what lhsight finds" ;;
   panther*) ui_print "- Quest 3S ($DEV): not tried yet, the driver's log says what lhsight finds" ;;
   *) ui_print "! this is $DEV, not a Quest Pro, 2, 3 or 3S: lhsight may not find its cameras" ;;
